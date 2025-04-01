@@ -43,6 +43,8 @@ add_executable(hyb_blink
       hyb_main.c
       core_0/main_c0.c
       core_1/application/blink.c
+      core_1/application/irq_sw.c
+      core_1/application/my_stdemb.c
       core_1/boot/start_c1.c
       core_1/boot/vector_tbl.c
       core_1/device/adc/adc_rp2040.c
@@ -75,7 +77,10 @@ pico_enable_stdio_usb(hyb_blink 0)
 # Add the standard library to the build
 target_link_libraries(hyb_blink
         pico_stdlib
-        pico_multicore)
+        pico_multicore
+        hardware_flash
+        hardware_sync
+        )
 
 # Add the standard include files to the build
 target_include_directories(hyb_blink PRIVATE

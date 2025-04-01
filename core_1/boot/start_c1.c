@@ -7,6 +7,7 @@
 #include <syslib.h>
 #include <knldef.h>
 
+
 /* 初期スタック */
 UW  knl_stack[2048/sizeof(UW)];
 
@@ -21,7 +22,8 @@ static void init_systim(void)
 
 /*** CPUコア1の起動処理 ****/
 void main_c1(void)
-{
+{   
+
     out_w(SCB_SHPR3, (INTLEVEL_0<<24)|(INTLEVEL_3<<16));    // PendSVC例外とSysTick例外の優先度設定 */
     init_systim();      // システムタイマの初期化
     set_primask(0);     // 割り込みを有効化

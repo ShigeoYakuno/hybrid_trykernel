@@ -49,10 +49,17 @@ typedef	struct t_cflg {
     UINT    iflgptn;    // イベントフラグ初期値
 } T_CFLG;
 
+typedef	struct t_rflg {
+	UINT	flgptn;		// 現在のイベントフラグのビットパターン
+} T_RFLG;
+
 /* イベントフラグ API */
 ID tk_cre_flg( const T_CFLG *pk_cflg );
 ER tk_set_flg( ID flgid, UINT setptn );
 ER tk_clr_flg( ID flgid, UINT clrptn );
+
+//@yaku　ref_flag移植
+ER tk_ref_flg( ID flgid, T_RFLG *pk_rflg );
 
 #define TWF_ANDW    0x00000000U     // AND待ち
 #define TWF_ORW     0x00000001U     // OR待ち

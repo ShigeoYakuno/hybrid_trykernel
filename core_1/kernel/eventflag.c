@@ -147,3 +147,24 @@ ER tk_wai_flg( ID flgid, UINT waiptn, UINT wfmode, UINT *p_flgptn, TMO tmout )
     EI(intsts);     // 割込み許可
     return err;
 }
+
+/*@yaku ref_flg 移植*/
+ER tk_ref_flg( ID flgid, T_RFLG *pk_rflg )
+{
+	FLGCB	*flgcb;
+	ER	ercd = E_OK;
+    UINT    intsts;
+
+    DI(intsts);     // 割込み禁止
+	flgcb = &flgcb_tbl[--flgid];
+
+    if(flgcb->state == KS_EXIST) {
+        pk_rflg->flgptn = flgcb->flgptn;
+    } else {
+        ercd = E_NOEXS;
+    }
+
+	EI(intsts);     // 割込み許可
+
+	return ercd;
+}
