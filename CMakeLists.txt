@@ -42,6 +42,7 @@ pico_sdk_init()
 add_executable(hyb_blink
       hyb_main.c
       core_0/main_c0.c
+      core_0/lcd_1602_i2c_c0.c
       core_1/application/blink.c
       core_1/application/irq_sw.c
       core_1/application/my_stdemb.c
@@ -68,7 +69,7 @@ add_executable(hyb_blink
 )
 
 pico_set_program_name(hyb_blink "hyb_blink")
-pico_set_program_version(hyb_blink "0.1")
+pico_set_program_version(hyb_blink "0.2")
 
 # Modify the below lines to enable/disable output over UART/USB
 pico_enable_stdio_uart(hyb_blink 1)
@@ -78,8 +79,10 @@ pico_enable_stdio_usb(hyb_blink 0)
 target_link_libraries(hyb_blink
         pico_stdlib
         pico_multicore
+        pico_binary_info
         hardware_flash
         hardware_sync
+        hardware_i2c
         )
 
 # Add the standard include files to the build

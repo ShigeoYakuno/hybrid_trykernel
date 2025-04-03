@@ -5,6 +5,7 @@
 #include "pico/multicore.h"
 #include "../core_1/application/hyb_public.h"
 #include "../core_1/application/my_stdemb.h"
+#include "core_0/lcd_1602_i2c_c0.h"
 
 #define LED_PIN     16              // LEDのGPIO番号
 
@@ -14,18 +15,12 @@ const uint32_t FLASH_TARGET_OFFSET = 0x1F0000;
 uint8_t f_rd[7]={0};
 
 
-//  コア1の起動処理は、core_1/boot/start_c1.cに記述されている
-void core1_victim_wrap(void)
-{
-    multicore_lockout_victim_init();
-}
 
 void save_setting(void)
 {
-    // W25Q16JVの書き込み最小単位 = FLASH_PAGE_SIZE(256Byte)
+    // W25Q16JVの書き込み最小単 = FLASH_PAGE_SIZE(256Byte)
     uint8_t wd[FLASH_PAGE_SIZE] ={0};
 
-    // 保存データのセット(例)
     wd[0] = 'S';
     wd[1] = 'A';
     wd[2] = 'M';
@@ -39,11 +34,11 @@ void save_setting(void)
     // コア0を停止
     multicore_lockout_start_blocking();
 
-    // Flash消去。
-    //  消去単位はflash.hで定義されている FLASH_SECTOR_SIZE(4096Byte) の倍数とする
+    // Flash消去
+    //  消去単位　FLASH_SECTOR_SIZE(4096Byte) の倍数
     flash_range_erase(FLASH_TARGET_OFFSET, FLASH_SECTOR_SIZE);
-    // Flash書き込み。
-    //  書込単位はflash.hで定義されている FLASH_PAGE_SIZE(256Byte) の倍数とする
+    // Flash書き込み
+    //  書込単位　FLASH_PAGE_SIZE(256Byte) の倍数
     flash_range_program(FLASH_TARGET_OFFSET, wd, FLASH_PAGE_SIZE);
 
     // コア0を再開
@@ -72,16 +67,18 @@ void load_setting(void)
 
 void main_c0(void)
 {
-    /*サブのコアに設定する フラッシュ操作時に停止させるため*/
+    /*c0は停止可能なサブコアとして定義*/
     multicore_lockout_victim_init();
     
     gpio_init(LED_PIN);                 // GPIO初期化
     gpio_set_dir(LED_PIN, GPIO_OUT);    // GPIOを出力に設定
-    while (true) {
+
+    i2cLcdPerfInit();
+
+    while (1) {
         gpio_put(LED_PIN, 1);           // LED点灯
         sleep_ms(500);                  // 500ミリ秒間休止
         gpio_put(LED_PIN, 0);           // LED消灯
         sleep_ms(500);                  // 500ミリ秒間休止
-
     }
 }
